@@ -6,21 +6,16 @@ import { DeleteOutline, SaveOutlined, UploadOutlined } from "@mui/icons-material
 import Swal from "sweetalert2";
 import 'sweetalert2/dist/sweetalert2.css'
 
-import { ImageGalery } from "../components";
+import { ImageGallery } from "../components";
 import { useForm } from "../../hooks/useForm";
-import { setActiveNote, startSavedNote, startUpLoadingFile } from "../../store/journal";
-import { startDeletingNote } from "../../store/auth";
-
-
-
-
+import { setActiveNote, startSavedNote, startUpLoadingFile, startDeletingNote} from "../../store/journal";
 
 
 export const NoteView = () => {
 
     const dispatch = useDispatch();
 
-    const { active, messageSaved, isSaving } = useSelector(state => state.journal);
+    const { active, messageSaved, isSaving } = useSelector( state => state.journal );
 
     const { body, title, date, onInputChange, formState } = useForm(active)
 
@@ -126,8 +121,8 @@ export const NoteView = () => {
                     Borrar
                 </Button>
             </Grid>
-
-            <ImageGalery images={ active.imageUrls }/>
+            
+            <ImageGallery images={ active.imageUrls } />
         </Grid>
     )
 }

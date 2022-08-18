@@ -1,11 +1,8 @@
-import { async } from "@firebase/util"
-import { deleteDoc, doc } from "firebase/firestore/lite"
-import { FirebaseDB } from "../../firebase/config"
 import { loginWithEmailPassword, logoutFirebase, registerUserWithEmailPassword, singInWithGoogle } from "../../firebase/providers"
-import { clearNotesLogout, deleteNoteById } from "../journal/journalSlice"
+import { clearNotesLogout } from "../journal/journalSlice"
 import { checkinCrediantals, login, logout } from "./authSlice"
 
-export const checkingAuthentic = (email, password) => {
+export const checkingAuthentic = () => {
 
     return async (dispatch) => {
         dispatch(checkinCrediantals())
@@ -70,18 +67,6 @@ export const starLogout = () => {
     }
 }
 
-export const startDeletingNote = () => {
 
-    return async (dispatch, getState) => {
-        const { uid } = getState().auth;
-        const { active } = getState().journal;
-        
-        const docRef = doc( FirebaseDB, `${uid}/journal/notes/${active.id}`);
-        await deleteDoc(docRef);
-
-        dispatch( deleteNoteById(active.id));
-
-    }
-}
 
 

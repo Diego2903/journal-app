@@ -1,8 +1,7 @@
-import { collection, doc, setDoc } from "firebase/firestore/lite";
+import { collection, deleteDoc, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
-import { fileUpload } from "../../helpers/fileUpload";
-import { loadNotes } from "../../helpers/loadNotes";
-import { addEmptyNotes, savingNewNote, setActiveNote, setNotes, setPhotosActiveNote, setSaving, upDateNote } from "./journalSlice";
+import { fileUpload, loadNotes } from "../../helpers";
+import { addEmptyNotes, deleteNoteById, savingNewNote, setActiveNote, setNotes, setPhotosActiveNote, setSaving, upDateNote } from "./journalSlice";
 
 export const starNewNote = () => {
 
@@ -22,8 +21,7 @@ export const starNewNote = () => {
         await setDoc(newDoc, newNote);
 
         newNote.id = newDoc.id
-
-        dispatch(addEmptyNotes(newNote));
+        dispatch(addEmptyNotes(newNote)); 
         dispatch(setActiveNote(newNote));
 
     }
@@ -36,7 +34,7 @@ export const startLoadingNotes = () => {
 
         const { uid } = getState().auth;
 
-        if (!uid) throw new Error("El UID del error no se encuentra en vigencia");
+        if (!uid) throw new Error("El UID del usuario no se encuentra en vigencia");
 
         const notes = await loadNotes(uid)
 
@@ -79,9 +77,23 @@ export const startUpLoadingFile = (files = []) => {
            fileUploadPromises.push( fileUpload( file ));
 
         }
-        const photosUrls = await Promise.all( fileUploadPromises);
+        const photosUrls = await Promise.all( fileUploadPromises );
        
         dispatch( setPhotosActiveNote( photosUrls ));
     }
 
+}
+
+export const startDeletingNote = () => {
+
+    return async (dispatch, getState) => {
+        const { uid } = getState().auth;
+        const { active } = getState().journal;
+        
+        const docRef = doc( FirebaseDB, `${uid}/journal/notes/${active.id}`);
+        await deleteDoc(docRef);
+
+        dispatch( deleteNoteById(active.id));
+
+    }
 }
